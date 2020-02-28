@@ -1,69 +1,73 @@
 ﻿using System.Collections.Generic;
 using Title.Game.Manager;
-using UnityEngine;
 
 namespace Title.Game.Command
 {
-	public class Procedure: IProcedure
+	public class Procedure: ICommand
 	{
 		public int CommandId { get; }
 
 		public CommandType CommandType => CommandType.Procedure;
-		public List<ICommand> Commands { get; }
+		private List<ICommand> Commands { get; }
 
-		private event System.Action ResetEvent;
-		
 		public bool IsDone { get; private set; }
 
 		private ICommand currentCommand;
 
-		private bool isReset = false;
+		private Queue<ICommand> QueueCommand;
 		
 		public Procedure(List<ICommand> commands)
 		{
-			Commands = commands;
-			foreach (var command in Commands)
-			{
-				if (command is IReset reset)
-				{
-					ResetEvent += () => reset.Reset();
-				}
-			}
-			
+			Commands = new List<ICommand>();
+			AddCommand(commands);
 			CommandId = GameManager.Instance.GetCommandId();
 		}
 
 		public void Execute()
 		{
+			if (QueueCommand.Count == 0)
+				IsDone = true;
+			
 			if(IsDone)
 				return;
-			
-			foreach (var command in Commands)
+
+			if (currentCommand is null || currentCommand.IsDone)
 			{
-				currentCommand = command;
-				if (currentCommand.CommandId == this.CommandId)
+				currentCommand = QueueCommand.Dequeue();
+				UnityEngine.Debug.Log(currentCommand.ToString());
+			}
+
+			if (!currentCommand.IsDone)
+			{
+				if (currentCommand is Procedure procedure)
 				{
-					isReset = true;
-					break;
+					procedure.Reset();
+					procedure.Execute();
 				}
-				while (currentCommand.IsDone == false)
+				else
 				{
-					Debug.Log(currentCommand.ToString());
 					currentCommand.Execute();
 				}
 			}
-
-			if (!isReset)
-			{
-				IsDone = true;
-			}
-			else
-			{
-				ResetEvent?.Invoke();
-				isReset = false;
-			}
 		}
-
+		
+		public void Reset()
+		{
+			QueueCommand = new Queue<ICommand>(Commands);
+		}
+		
+		public void AddCommand(IEnumerable<ICommand> commands)
+		{
+			Commands.AddRange(commands);
+			QueueCommand = new Queue<ICommand>(Commands);
+		}
+		
+		public void AddCommand(ICommand command)
+		{
+			Commands.Add(command);
+			QueueCommand = new Queue<ICommand>(Commands);
+		}
+		
 		public override string ToString()
 		{
 			return $"Procedure {CommandId}";

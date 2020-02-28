@@ -2,7 +2,7 @@
 
 namespace Title.Game.Command
 {
-	public abstract class Command : ICommand, IReset
+	public abstract class Command : ICommand
 	{
 		public int CommandId { get; }
 		public abstract CommandType CommandType { get; }
@@ -16,11 +16,6 @@ namespace Title.Game.Command
 		
 		public abstract void Execute();
 
-		void IReset.Reset()
-		{
-			IsDone = false;
-		}
-		
 		public override string ToString()
 		{
 			return $"{CommandType.ToString()} {CommandId} Command";

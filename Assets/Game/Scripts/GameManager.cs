@@ -16,6 +16,8 @@ namespace Title.Game.Manager
 
 		private int commandCounter = 0;
 
+		private Queue<ICommand> QueueCommand;
+
 		public int GetCommandId() => ++commandCounter;
 		
 		private void Awake()
@@ -32,7 +34,7 @@ namespace Title.Game.Manager
 		{
 			Procedure procedure = new Procedure(new List<ICommand>{new Attack(), new Attack()});
 			
-			procedure.Commands.Add(procedure);
+			procedure.AddCommand(procedure);
 			
 			Commands = new List<ICommand>
 			{
@@ -43,19 +45,26 @@ namespace Title.Game.Manager
 				procedure
 			};
 			
+			QueueCommand = new Queue<ICommand>(Commands);
+			
 			Debug.Log(Commands.Count);
 		}
 
 		private void Update()
 		{
-			foreach (var command in Commands)
+			if (currentCommand is null || currentCommand.IsDone)
 			{
-				currentCommand = command;
-				while (currentCommand.IsDone == false)
+				if (QueueCommand.Count == 0)
 				{
-					Debug.Log(currentCommand.ToString());
-					currentCommand.Execute();
+					return;
 				}
+				currentCommand = QueueCommand.Dequeue();
+				Debug.Log(currentCommand.ToString());
+			}
+
+			if (!currentCommand.IsDone)
+			{
+				currentCommand.Execute();
 			}
 		}
 	}
