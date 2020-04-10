@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Title.Game.Manager;
 
 namespace Title.Game.Command
@@ -54,6 +55,8 @@ namespace Title.Game.Command
 		public void Reset()
 		{
 			QueueCommand = new Queue<ICommand>(Commands);
+			
+			
 		}
 		
 		public void AddCommand(IEnumerable<ICommand> commands)
@@ -61,7 +64,7 @@ namespace Title.Game.Command
 			Commands.AddRange(commands);
 			QueueCommand = new Queue<ICommand>(Commands);
 		}
-		
+
 		public void AddCommand(ICommand command)
 		{
 			Commands.Add(command);

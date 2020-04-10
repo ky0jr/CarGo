@@ -18,6 +18,8 @@ namespace Title.Game.Manager
 
 		private Queue<ICommand> QueueCommand;
 
+		private Transform _transform;
+
 		public int GetCommandId() => ++commandCounter;
 		
 		private void Awake()
@@ -44,10 +46,11 @@ namespace Title.Game.Manager
 				new Attack(),*/
 				procedure
 			};
-			
 			QueueCommand = new Queue<ICommand>(Commands);
 			
 			Debug.Log(Commands.Count);
+
+			Transform temp = _transform is null ? transform : _transform;
 		}
 
 		private void Update()
@@ -61,7 +64,7 @@ namespace Title.Game.Manager
 				currentCommand = QueueCommand.Dequeue();
 				Debug.Log(currentCommand.ToString());
 			}
-
+			
 			if (!currentCommand.IsDone)
 			{
 				currentCommand.Execute();
