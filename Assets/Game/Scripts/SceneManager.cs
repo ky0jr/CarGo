@@ -1,8 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Game.Scene
+namespace Title.Scene
 {
     public class SceneManager : MonoBehaviour
     {
@@ -10,11 +9,14 @@ namespace Game.Scene
         private static readonly int FadeIn = Animator.StringToHash("FadeIn");
         
         private Animator animator;
-
+        private Canvas canvas;
         private async void Awake()
         {
             animator = GetComponent<Animator>();
+            canvas = GetComponent<Canvas>();
 
+            canvas.enabled = true;
+            
             await Crossfade(FadeIn);
         }
 

@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Game.UI.Button
+namespace Title.UI.Button
 {
     [RequireComponent(typeof(Image))]
 	public class Button : MonoBehaviour, IPointerDownHandler, IPointerExitHandler, IPointerUpHandler
