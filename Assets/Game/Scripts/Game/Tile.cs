@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 
-public class Tile : MonoBehaviour
+namespace Title.Game
 {
-    public Vector3 Position => transform.position;
+    public class Tile : MonoBehaviour
+    {
+        public Vector3 Position => transform.position;
+    }
 }
