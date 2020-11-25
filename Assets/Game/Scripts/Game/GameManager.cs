@@ -26,8 +26,9 @@ namespace Title.Game
         #endregion
 
         [SerializeField] private Tile firstTile;
-
         [SerializeField] public List<Tile> Tiles = new List<Tile>();
+        
+        [SerializeField] private CameraController cameraController;
 
         private void Start()
         {
@@ -35,6 +36,29 @@ namespace Title.Game
             {
                 firstTile = Tiles[0];
             }
+
+            Vector3 topLeft = Vector3.zero;
+            Vector3 bottomRight = Vector3.zero;
+
+            foreach (Tile tile in Tiles)
+            {
+                if (tile.Position.x < topLeft.x)
+                    topLeft.x = tile.Position.x;
+                if (tile.Position.z > topLeft.z)
+                    topLeft.z = tile.Position.z;
+                if (tile.Position.x > bottomRight.x)
+                    bottomRight.x = tile.Position.x;
+                if (tile.Position.z < bottomRight.z)
+                    topLeft.z = tile.Position.z;
+            }
+
+            float distance = Vector3.Distance(bottomRight, topLeft) / 2f;
+
+            Vector3 direction = bottomRight - topLeft;
+            
+            direction.Normalize();
+
+            cameraController.LookPosition.position = topLeft + (direction * distance);
         }
 
         public Vector3? NextTile(Vector3 position, Vector3 direction)
@@ -45,8 +69,6 @@ namespace Title.Game
             }
 
             position.y = 0;
-
-
 
             foreach (Tile tile in Tiles)
             {
