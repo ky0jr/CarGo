@@ -4,6 +4,8 @@
     {
         Move,
         RotateLeft,
-        RotateRight
+        RotateRight,
+        Action,
+        Procedure
     }
 }

@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
+using Title.Game.Command;
+using Title.Game.Player;
 using UnityEngine;
 
 namespace Title.Game
@@ -25,18 +28,76 @@ namespace Title.Game
 
         #endregion
 
+        private const float TileDistance = 1.5f;
+        
         [SerializeField] private Tile firstTile;
-        [SerializeField] public List<Tile> Tiles = new List<Tile>();
+        [SerializeField] private List<Tile> Tiles = new List<Tile>();
         
         [SerializeField] private CameraController cameraController;
-
+        [SerializeField] private FunctionManager _functionManager;
+        [SerializeField] private PlayerController _playerController;
+        [SerializeField] private Vector3 moveDirection;
+        
+        private CancellationTokenSource _cancellationToken;
+        private Quaternion defaultRotation;
+        private List<IObjective> objectives;
+        
         private void Start()
         {
-            if (firstTile is null && Tiles.Count > 0)
+            if(Tiles.Count == 0)
+                Tiles = new List<Tile>(FindObjectsOfType<Tile>());
+
+            objectives = new List<IObjective>();
+
+            foreach (Tile tile in Tiles)
             {
-                firstTile = Tiles[0];
+                if(tile is IObjective objective)
+                {
+                    objectives.Add(objective);
+                    objective.OnComplete += CheckObjective;
+                }
+
+                if (firstTile is null && tile is FirstTile)
+                    firstTile = tile;
+            }
+            
+            CenterCamera();
+            _functionManager.Initialize();
+
+            if (_playerController is null)
+            {
+                _playerController = FindObjectOfType<PlayerController>();
             }
 
+            defaultRotation = _playerController.transform.rotation;
+            Reset();
+            _cancellationToken = null;
+        }
+
+        public ITile NextTile(ITile currentTile, Vector3 direction)
+        {
+            if (Tiles.Count == 0)
+            {
+                return null;
+            }
+
+            foreach (Tile tile in Tiles)
+            {
+                Vector3 _direction = currentTile.Position - tile.Position;
+                _direction.y = 0;
+                _direction.Normalize();
+
+                if (_direction == direction * -1f && Vector3.Distance(currentTile.Position, tile.Position) < TileDistance)
+                {
+                    return tile;
+                }
+            }
+
+            return null;
+        }
+
+        private void CenterCamera()
+        {
             Vector3 topLeft = Vector3.zero;
             Vector3 bottomRight = Vector3.zero;
 
@@ -61,28 +122,73 @@ namespace Title.Game
             cameraController.LookPosition.position = topLeft + (direction * distance);
         }
 
-        public Vector3? NextTile(Vector3 position, Vector3 direction)
+        private void Update()
         {
-            if (Tiles.Count == 0)
+            if(Input.GetButtonDown("Jump"))
+                Play();
+        }
+
+        private async void Play()
+        {
+            if (_cancellationToken is null)
             {
-                return null;
-            }
+                
+                _cancellationToken = new CancellationTokenSource();
+                CancellationToken ct = _cancellationToken.Token;
 
-            position.y = 0;
-
-            foreach (Tile tile in Tiles)
-            {
-                Vector3 _direction = position - tile.Position;
-                _direction.y = 0;
-                _direction.Normalize();
-
-                if (_direction == direction * -1f && Vector3.Distance(position, tile.Position) < 2f)
+                foreach (var mainCommand in _functionManager.CommandList(FunctionType.Main))
                 {
-                    return tile.Position;
+                    if (mainCommand.CommandType == CommandType.Procedure)
+                    {
+                        foreach (var procedureCommand in _functionManager.CommandList(FunctionType.Procedure))
+                        {
+                            await _playerController.RunCommand(procedureCommand.CommandType, ct);
+                            if (ct.IsCancellationRequested)
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        await _playerController.RunCommand(mainCommand.CommandType, ct);
+                    }
+                    
+                    if (ct.IsCancellationRequested)
+                        break;
                 }
             }
+            else
+            {
+                _cancellationToken?.Cancel();
+                _cancellationToken = null;
+                Reset();
+            }
+        }
 
-            return null;
+        private void Reset()
+        {
+            _playerController.transform.position = firstTile.Position;
+            _playerController.transform.rotation = defaultRotation;
+            _playerController.MoveDirection = moveDirection;
+            _playerController.CurrentTile = firstTile;
+
+            foreach (IObjective objective in objectives)
+            {
+                if (objective.Completed)
+                {
+                    objective.Objective();
+                }
+            }
+        }
+
+        private void CheckObjective()
+        {
+            foreach (IObjective objective in objectives)
+            {
+                if(!objective.Completed)
+                    return;
+            }
+            
+            _cancellationToken?.Cancel();
         }
     }
 }
