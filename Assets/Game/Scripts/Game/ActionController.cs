@@ -4,8 +4,5 @@ using UnityEngine;
 public class ActionController : MonoBehaviour
 {
     [SerializeField]
-    private Button playButton;
-
-    [SerializeField] 
-    private Button pauseButton;
+    public Button PlayButton;
 }

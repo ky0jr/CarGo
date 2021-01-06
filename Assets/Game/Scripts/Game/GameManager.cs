@@ -37,6 +37,7 @@ namespace Title.Game
         [SerializeField] private FunctionManager _functionManager;
         [SerializeField] private PlayerController _playerController;
         [SerializeField] private Vector3 moveDirection;
+        [SerializeField] private ActionController actionController;
         
         private CancellationTokenSource _cancellationToken;
         private Quaternion defaultRotation;
@@ -72,6 +73,8 @@ namespace Title.Game
             defaultRotation = _playerController.transform.rotation;
             Reset();
             _cancellationToken = null;
+
+            actionController.PlayButton.ButtonDown += Play;
         }
 
         public ITile NextTile(ITile currentTile, Vector3 direction)
@@ -135,7 +138,8 @@ namespace Title.Game
                 
                 _cancellationToken = new CancellationTokenSource();
                 CancellationToken ct = _cancellationToken.Token;
-
+                _functionManager.ActiveRaycast(false);
+                
                 foreach (var mainCommand in _functionManager.CommandList(FunctionType.Main))
                 {
                     if (mainCommand.CommandType == CommandType.Procedure)
@@ -178,6 +182,8 @@ namespace Title.Game
                     objective.Objective();
                 }
             }
+            
+            _functionManager.ActiveRaycast(true);
         }
 
         private void CheckObjective()

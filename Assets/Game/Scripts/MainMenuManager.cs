@@ -1,5 +1,4 @@
 ﻿using Title.Menu.Controller;
-using Title.Path;
 using Title.Scene;
 using UnityEngine;
 
@@ -13,23 +12,22 @@ namespace Title.Menu
 
         private void Start()
         {
-            mainMenuController.OnClickEvent += Open;
+            mainMenuController.OnClickEvent += OnMenuChange;
             mainMenuController.Initialize();
         }
 
-        private void Open(string path)
+        private void OnMenuChange(string path)
         {
-            if (path.Equals(MenuPath.Play))
+            switch (path)
             {
-                sceneManager.ChangeScene(ScenePath.Stage1);
-            }
-            else if (path.Equals(MenuPath.Option))
-            {
-
-            }
-            else if (path.Equals(MenuPath.Exit))
-            {
-                Application.Quit();
+                case Path.MenuPath.Play:
+                    sceneManager.ChangeScene(Path.ScenePath.Stage1);
+                    break;
+                case Path.MenuPath.Option:
+                    break;
+                case Path.MenuPath.Exit:
+                    Application.Quit();
+                    break;
             }
         }
     }

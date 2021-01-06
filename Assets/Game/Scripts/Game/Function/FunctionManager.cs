@@ -13,6 +13,9 @@ public class FunctionManager : MonoBehaviour
     [SerializeField] 
     private CommandType[] _commandTypes;
     
+    [SerializeField]
+    private CanvasGroup canvasGroup;
+    
     private bool isInitialize = false;
 
     public void Initialize()
@@ -24,10 +27,17 @@ public class FunctionManager : MonoBehaviour
         _commandController.Initialize(_commandTypes);
         _commandController.AddCommandEvent += _functionController.AddCommand;
         isInitialize = true;
+        
+        canvasGroup.blocksRaycasts = true;
     }
 
     public IEnumerable<Command> CommandList(FunctionType functionType)
     {
         return _functionController.Commands(functionType);
+    }
+
+    public void ActiveRaycast(bool value)
+    {
+        canvasGroup.blocksRaycasts = value;
     }
 }

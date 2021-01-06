@@ -1,5 +1,4 @@
 ﻿using System;
-using Title.Path;
 using Title.UI.Button;
 using UnityEngine;
 
@@ -20,9 +19,9 @@ namespace Title.Menu.Controller
             if (isInitialize)
                 return;
 
-            playButton.ButtonDown += () => OnClick(MenuPath.Play);
-            optionButton.ButtonDown += () => OnClick(MenuPath.Option);
-            exitButton.ButtonDown += () => OnClick(MenuPath.Exit);
+            playButton.ButtonDown += () => OnClick(Path.MenuPath.Play);
+            optionButton.ButtonDown += () => OnClick(Path.MenuPath.Option);
+            exitButton.ButtonDown += () => OnClick(Path.MenuPath.Exit);
 
             isInitialize = true;
         }
