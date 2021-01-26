@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Title.UI.Button
+namespace CarGo.UI.Button
 {
     [RequireComponent(typeof(Image))]
 	public class Button : MonoBehaviour, IPointerDownHandler, IPointerExitHandler, IPointerUpHandler
@@ -11,9 +11,16 @@ namespace Title.UI.Button
 		public event Action ButtonDown;
 		public event Action ButtonUp;
 		public event Action ButtonExit;
-
+		
+		public Image _Image { get; protected set; }
+		
 		private bool _active = true;
 		private bool _pressed = false;
+
+		private void Awake()
+		{
+			_Image = GetComponent<Image>();
+		}
 
 		void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
 		{

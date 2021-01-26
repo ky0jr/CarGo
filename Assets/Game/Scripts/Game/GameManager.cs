@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
-using Title.Game.Command;
-using Title.Game.Player;
+using CarGo.Game.Controller;
+using CarGo.Game.Function;
+using CarGo.Game.Player;
+using CarGo.Menu;
+using CarGo.Scene;
 using UnityEngine;
 
-namespace Title.Game
+namespace CarGo.Game
 {
     public class GameManager : MonoBehaviour
     {
@@ -28,7 +31,7 @@ namespace Title.Game
 
         #endregion
 
-        private const float TileDistance = 1.5f;
+        private const float TileDistance = 3.5f;
         
         [SerializeField] private Tile firstTile;
         [SerializeField] private List<Tile> Tiles = new List<Tile>();
@@ -38,6 +41,8 @@ namespace Title.Game
         [SerializeField] private PlayerController _playerController;
         [SerializeField] private Vector3 moveDirection;
         [SerializeField] private ActionController actionController;
+        [SerializeField] private CompleteController completeController;
+        [SerializeField] private SceneManager sceneManager;
         
         private CancellationTokenSource _cancellationToken;
         private Quaternion defaultRotation;
@@ -75,6 +80,9 @@ namespace Title.Game
             _cancellationToken = null;
 
             actionController.PlayButton.ButtonDown += Play;
+            actionController.ResetButton.ButtonDown += _functionManager.ResetFunction;
+
+            completeController.ContinueButton.ButtonDown += () => sceneManager.ChangeScene(Path.ScenePath.Menu);
         }
 
         public ITile NextTile(ITile currentTile, Vector3 direction)
@@ -90,7 +98,28 @@ namespace Title.Game
                 _direction.y = 0;
                 _direction.Normalize();
 
-                if (_direction == direction * -1f && Vector3.Distance(currentTile.Position, tile.Position) < TileDistance)
+                if (_direction == direction * -1f && Vector3.Distance(currentTile.Position, tile.Position) <= TileDistance)
+                {
+                    return tile;
+                }
+            }
+
+            return null;
+        }
+        
+        public ITile NextTile(ITile currentTile, Vector3 direction, bool jump)
+        {
+            if (Tiles.Count == 0)
+            {
+                return null;
+            }
+
+            foreach (Tile tile in Tiles)
+            {
+                Vector3 _direction = currentTile.Position - tile.Position;
+                _direction.Normalize();
+
+                if (_direction == direction * -1f && Vector3.Distance(currentTile.Position, tile.Position) <= TileDistance)
                 {
                     return tile;
                 }
@@ -104,6 +133,11 @@ namespace Title.Game
             Vector3 topLeft = Vector3.zero;
             Vector3 bottomRight = Vector3.zero;
 
+            if (Tiles.Count == 0)
+            {
+                
+            }
+            
             foreach (Tile tile in Tiles)
             {
                 if (tile.Position.x < topLeft.x)
@@ -125,17 +159,11 @@ namespace Title.Game
             cameraController.LookPosition.position = topLeft + (direction * distance);
         }
 
-        private void Update()
-        {
-            if(Input.GetButtonDown("Jump"))
-                Play();
-        }
-
         private async void Play()
         {
             if (_cancellationToken is null)
             {
-                
+                actionController.PlayButton._Image.color = new Color(0.5f, 0.5f, 0.5f);
                 _cancellationToken = new CancellationTokenSource();
                 CancellationToken ct = _cancellationToken.Token;
                 _functionManager.ActiveRaycast(false);
@@ -146,14 +174,14 @@ namespace Title.Game
                     {
                         foreach (var procedureCommand in _functionManager.CommandList(FunctionType.Procedure))
                         {
-                            await _playerController.RunCommand(procedureCommand.CommandType, ct);
+                            await _playerController.ExecuteCommand(procedureCommand.CommandType, ct);
                             if (ct.IsCancellationRequested)
                                 break;
                         }
                     }
                     else
                     {
-                        await _playerController.RunCommand(mainCommand.CommandType, ct);
+                        await _playerController.ExecuteCommand(mainCommand.CommandType, ct);
                     }
                     
                     if (ct.IsCancellationRequested)
@@ -184,6 +212,7 @@ namespace Title.Game
             }
             
             _functionManager.ActiveRaycast(true);
+            actionController.PlayButton._Image.color = new Color(1f, 1f, 1f);
         }
 
         private void CheckObjective()
@@ -193,6 +222,9 @@ namespace Title.Game
                 if(!objective.Completed)
                     return;
             }
+            
+            Debug.Log("Game Compelete");
+            completeController.Show();
             
             _cancellationToken?.Cancel();
         }

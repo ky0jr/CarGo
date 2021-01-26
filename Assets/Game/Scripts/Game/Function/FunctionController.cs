@@ -1,49 +1,71 @@
 ﻿using System.Collections.Generic;
-using Title.Game.Command;
+using CarGo.Game.Function;
 using UnityEngine;
 
-public class FunctionController : MonoBehaviour
+namespace CarGo.Game.Controller
 {
-    private IFunction currentFunction;
-
-    private IFunction[] _functions;
-    
-    public void Initialize()
+    public class FunctionController : MonoBehaviour
     {
-        _functions = GetComponentsInChildren<IFunction>();
-        foreach (var function in _functions)
+        private IFunction currentFunction;
+
+        private List<IFunction> _functions;
+
+        private bool isInitialize = false;
+
+        public void Initialize()
         {
-            function.OnSelected += SelectFunction;
-            
-            if (function.FunctionType == FunctionType.Main)
-                currentFunction = function;
-        }
-    }
-    public void AddCommand(Command command)
-    {
-        currentFunction.AddCommand(command);
-    }
-
-    private void SelectFunction(IFunction function)
-    {
-        currentFunction = function;
-    }
-
-    public IEnumerable<Command> Commands(FunctionType functionType)
-    {
-        List<Command> commands = new List<Command>();
-
-        foreach (IFunction function in _functions)
-        {
-            if (function.FunctionType == functionType)
+            if (isInitialize)
             {
-                foreach (var button in function.CommandButtons)
+                return;
+                ;
+            }
+
+            _functions = new List<IFunction>(GetComponentsInChildren<IFunction>());
+            foreach (var function in _functions)
+            {
+                function.OnSelected += SelectFunction;
+
+                if (function.FunctionType == FunctionType.Main)
+                    currentFunction = function;
+            }
+
+            isInitialize = true;
+        }
+
+        public void AddCommand(Function.Command command)
+        {
+            currentFunction.AddCommand(command);
+        }
+
+        private void SelectFunction(IFunction function)
+        {
+            currentFunction = function;
+        }
+
+        public IEnumerable<Function.Command> CommandList(FunctionType functionType)
+        {
+            List<Function.Command> commands = new List<Function.Command>();
+
+            foreach (IFunction function in _functions)
+            {
+                if (function.FunctionType == functionType)
                 {
-                    commands.Add(button.Command);
+                    foreach (var button in function.ListOfCommandButton)
+                    {
+                        commands.Add(button.Command);
+                    }
                 }
             }
+
+            return commands;
         }
 
-        return commands;
+        public void ResetFunction()
+        {
+            foreach (IFunction function in _functions)
+            {
+                function.Clear();
+            }
+        }
     }
 }

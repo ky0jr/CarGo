@@ -1,14 +1,18 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-public interface IObjective
+namespace CarGo.Game
 {
-    event System.Action OnComplete;
-    bool Completed { get; }
+    public interface IObjective
+    {
+        event Action OnComplete;
+        bool Completed { get; }
 
-    void Objective();
-}
+        void Objective();
+    }
 
-public interface ITile
-{
-    Vector3 Position { get; }
+    public interface ITile
+    {
+        Vector3 Position { get; }
+    }
 }

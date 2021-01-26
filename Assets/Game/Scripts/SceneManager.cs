@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Title.Scene
+namespace CarGo.Scene
 {
     public class SceneManager : MonoBehaviour
     {

@@ -1,43 +1,50 @@
 ﻿using System.Collections.Generic;
-using Title.Game.Command;
+using CarGo.Game.Controller;
+using CarGo.Game.Function;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public class FunctionManager : MonoBehaviour
+namespace CarGo.Game
 {
-    [SerializeField]
-    private CommandController _commandController;
-
-    [SerializeField] 
-    private FunctionController _functionController;
-
-    [SerializeField] 
-    private CommandType[] _commandTypes;
-    
-    [SerializeField]
-    private CanvasGroup canvasGroup;
-    
-    private bool isInitialize = false;
-
-    public void Initialize()
+    public class FunctionManager : MonoBehaviour
     {
-        if(isInitialize)
-            return;
-        
-        _functionController.Initialize();
-        _commandController.Initialize(_commandTypes);
-        _commandController.AddCommandEvent += _functionController.AddCommand;
-        isInitialize = true;
-        
-        canvasGroup.blocksRaycasts = true;
-    }
+        [SerializeField] private CommandController _commandController;
 
-    public IEnumerable<Command> CommandList(FunctionType functionType)
-    {
-        return _functionController.Commands(functionType);
-    }
+        [SerializeField] private FunctionController _functionController;
 
-    public void ActiveRaycast(bool value)
-    {
-        canvasGroup.blocksRaycasts = value;
+        [FormerlySerializedAs("_commandTypes")] [SerializeField]
+        private List<CommandType> _listOfCommand;
+
+        [SerializeField] private CanvasGroup canvasGroup;
+
+        private bool isInitialize = false;
+
+        public void Initialize()
+        {
+            if (isInitialize)
+                return;
+
+            _functionController.Initialize();
+            _commandController.Initialize(_listOfCommand);
+            _commandController.AddCommandEvent += _functionController.AddCommand;
+            isInitialize = true;
+
+            canvasGroup.blocksRaycasts = true;
+        }
+
+        public IEnumerable<Function.Command> CommandList(FunctionType functionType)
+        {
+            return _functionController.CommandList(functionType);
+        }
+
+        public void ActiveRaycast(bool value)
+        {
+            canvasGroup.blocksRaycasts = value;
+        }
+
+        public void ResetFunction()
+        {
+            _functionController.ResetFunction();
+        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Title.Game
+namespace CarGo.Game
 {
     public class Tile : MonoBehaviour, ITile
     {

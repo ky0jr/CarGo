@@ -1,8 +1,8 @@
-﻿using Title.Menu.Controller;
-using Title.Scene;
+﻿using CarGo.Menu.Controller;
+using CarGo.Scene;
 using UnityEngine;
 
-namespace Title.Menu
+namespace CarGo.Menu
 {
     public class MainMenuManager : MonoBehaviour
     {

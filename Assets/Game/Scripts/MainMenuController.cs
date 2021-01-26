@@ -1,8 +1,8 @@
 ﻿using System;
-using Title.UI.Button;
+using CarGo.UI.Button;
 using UnityEngine;
 
-namespace Title.Menu.Controller
+namespace CarGo.Menu.Controller
 {
     public class MainMenuController : MonoBehaviour
     {

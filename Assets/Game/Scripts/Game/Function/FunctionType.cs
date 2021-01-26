@@ -1,5 +1,9 @@
-﻿public enum FunctionType
+﻿namespace CarGo.Game.Function
 {
-    Main,
-    Procedure
+    public enum FunctionType
+    {
+        Main,
+        Procedure
+    }
+
 }

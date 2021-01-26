@@ -1,39 +1,56 @@
-﻿using System.Collections.Generic;
-using Title.Game.Command;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class MainFunction : MonoBehaviour, IFunction
+namespace CarGo.Game.Function
 {
-    public event System.Action<IFunction> OnSelected; 
-    [SerializeField]
-    private CommandButton prefab;
-    
-    public FunctionType FunctionType => FunctionType.Main;
-    
-    public List<CommandButton> CommandButtons { get; } = new List<CommandButton>();
-    
-    void IFunction.Initialize()
+    public class MainFunction : MonoBehaviour, IFunction
     {
+        private const int MaxCommand = 15;
+        public event Action<IFunction> OnSelected;
         
-    }
-    
-    void IFunction.AddCommand(Command command)
-    {
-        CommandButton button = Instantiate(prefab, transform);
-        button.Initialize(command.CommandType);
-        CommandButtons.Add(button);
-        button.ButtonDown += () => RemoveCommand(button);
-    }
+        [SerializeField] private CommandButton prefab;
 
-    private void RemoveCommand(CommandButton button)
-    {
-        CommandButtons.Remove(button);
-        Destroy(button.gameObject);
-    }
+        public FunctionType FunctionType => FunctionType.Main;
 
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        OnSelected?.Invoke(this);
+        public List<CommandButton> ListOfCommandButton { get; } = new List<CommandButton>();
+
+        void IFunction.Initialize()
+        {
+
+        }
+
+        void IFunction.AddCommand(Function.Command command)
+        {
+            if (ListOfCommandButton.Count >= 15)
+                return;
+
+            CommandButton button = Instantiate(prefab, transform);
+            button.Initialize(command.CommandType);
+            ListOfCommandButton.Add(button);
+            button.ButtonDown += () => RemoveCommand(button);
+        }
+
+        void IFunction.Clear()
+        {
+            foreach (CommandButton button in ListOfCommandButton)
+            {
+                Destroy(button.gameObject);
+            }
+
+            ListOfCommandButton.Clear();
+        }
+
+        private void RemoveCommand(CommandButton button)
+        {
+            ListOfCommandButton.Remove(button);
+            Destroy(button.gameObject);
+        }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            OnSelected?.Invoke(this);
+        }
     }
 }

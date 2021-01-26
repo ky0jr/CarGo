@@ -1,4 +1,4 @@
-﻿namespace Title.Game.Command
+﻿namespace CarGo.Game.Function
 {
     public class Command
     {

@@ -1,34 +1,37 @@
-﻿using Title.Game.Command;
+﻿using System;
+using System.Collections.Generic;
+using CarGo.Game.Function;
 using UnityEngine;
 
-public class CommandController : MonoBehaviour
+namespace CarGo.Game.Controller
 {
-    public event System.Action<Command> AddCommandEvent;
-    [SerializeField]
-    private CommandButton commandButtonPrefab;
-
-    [SerializeField] 
-    private Transform commandBox;
-
-    private bool isInitialize = false;
-    
-    public void Initialize(CommandType[] commandTypes)
+    public class CommandController : MonoBehaviour
     {
-        if (isInitialize)
-            return;
-        
-        foreach (CommandType commandType in commandTypes)
+        public event Action<Function.Command> AddCommandEvent;
+        [SerializeField] private CommandButton commandButtonPrefab;
+
+        [SerializeField] private Transform commandBox;
+
+        private bool isInitialize = false;
+
+        public void Initialize(IEnumerable<CommandType> commandTypes)
         {
-            CommandButton button = Instantiate(commandButtonPrefab, commandBox);
-            button.Initialize(commandType);
-            button.ButtonDown += () => AddCommand(button.Command);
+            if (isInitialize)
+                return;
+
+            foreach (CommandType commandType in commandTypes)
+            {
+                CommandButton button = Instantiate(commandButtonPrefab, commandBox);
+                button.Initialize(commandType);
+                button.ButtonDown += () => AddCommand(button.Command);
+            }
+
+            isInitialize = true;
         }
 
-        isInitialize = true;
-    }
-
-    private void AddCommand(Command command)
-    {
-        AddCommandEvent?.Invoke(command);
+        private void AddCommand(Function.Command command)
+        {
+            AddCommandEvent?.Invoke(command);
+        }
     }
 }

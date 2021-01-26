@@ -1,26 +1,30 @@
-﻿using Title.Game;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class ObjectiveTile : Tile, IObjective
+namespace CarGo.Game
 {
-    public event System.Action OnComplete;
-    
-    public bool Completed { get; private set; }
-
-    [SerializeField] 
-    private MeshRenderer meshRenderer;
-
-    private void Start()
+    public class ObjectiveTile : Tile, IObjective
     {
-        meshRenderer = GetComponentInChildren<MeshRenderer>();
-        meshRenderer.material.color = Color.yellow;
-    }
+        public event System.Action OnComplete;
 
-    public void Objective()
-    {
-        Completed = !Completed;
-        OnComplete?.Invoke();
-        
-        meshRenderer.material.color = Completed ? Color.red : Color.yellow;
+        public bool Completed { get; private set; }
+
+        [SerializeField] private Renderer renderer;
+
+        [SerializeField] private Material[] lightUpMaterial;
+
+        [SerializeField] private Material[] lightOffMaterial;
+
+        private void Start()
+        {
+            renderer.sharedMaterials = lightOffMaterial;
+        }
+
+        public void Objective()
+        {
+            Completed = !Completed;
+            OnComplete?.Invoke();
+
+            renderer.sharedMaterials = Completed ? lightUpMaterial : lightOffMaterial;
+        }
     }
 }

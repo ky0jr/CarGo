@@ -75,7 +75,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbd60ef9aa78f6747974ed95f63d2518, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshRenderer: {fileID: 0}
+  renderer: {fileID: 774195323864935335}
+  lightUpMaterial:
+  - {fileID: 2100000, guid: d87d88a70f1195841a5355bc66d96ce1, type: 2}
+  - {fileID: 2100000, guid: d87d88a70f1195841a5355bc66d96ce1, type: 2}
+  lightOffMaterial:
+  - {fileID: 2100000, guid: e2e7ab6cb9c4c5a4b9599b702bbb440c, type: 2}
+  - {fileID: 2100000, guid: e2e7ab6cb9c4c5a4b9599b702bbb440c, type: 2}
 --- !u!1001 &5116961905697839256
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -143,6 +149,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Panel
       objectReference: {fileID: 0}
+    - target: {fileID: 2382799219754379413, guid: 1eb9b2793d381a547bd4e1ded2197560,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5601746991532979007, guid: 1eb9b2793d381a547bd4e1ded2197560,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -183,11 +194,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.x
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 7869873546869171050, guid: 1eb9b2793d381a547bd4e1ded2197560,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1eb9b2793d381a547bd4e1ded2197560, type: 3}
 --- !u!4 &4650424851510476659 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1eb9b2793d381a547bd4e1ded2197560,
+    type: 3}
+  m_PrefabInstance: {fileID: 5116961905697839256}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &774195323864935335 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5601746991532979007, guid: 1eb9b2793d381a547bd4e1ded2197560,
     type: 3}
   m_PrefabInstance: {fileID: 5116961905697839256}
   m_PrefabAsset: {fileID: 0}

@@ -1,11 +1,12 @@
-﻿namespace Title.Game.Command
+﻿namespace CarGo.Game.Function
 {
     public enum CommandType
     {
         Move,
         RotateLeft,
         RotateRight,
-        Action,
+        LightUp,
+        BoostUp,
         Procedure
     }
 }

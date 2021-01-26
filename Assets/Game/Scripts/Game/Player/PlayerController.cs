@@ -1,9 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Title.Game.Command;
+using CarGo.Game.Function;
 using UnityEngine;
 
-namespace Title.Game.Player
+namespace CarGo.Game.Player
 {
     public class PlayerController : MonoBehaviour
     {
@@ -11,13 +11,13 @@ namespace Title.Game.Player
 
         public ITile CurrentTile { get; set; }
 
-        private float _speed = 1.5f;
+        private const float Speed = 1.5f;
 
-        private float _rotationSpeed = 270f;
-        
+        private const float RotationSpeed = 270f;
+
         public Task CurrentTask { private set; get; } = Task.CompletedTask;
 
-        public async Task RunCommand(CommandType commandType, CancellationToken cancellationToken)
+        public async Task ExecuteCommand(CommandType commandType, CancellationToken cancellationToken)
         {
             if(!CurrentTask.IsCompleted && !CurrentTask.IsCanceled)
                 return;
@@ -31,8 +31,8 @@ namespace Title.Game.Player
                 case CommandType.RotateRight:
                     CurrentTask = Rotate(commandType, cancellationToken);
                     break;
-                case CommandType.Action:
-                    CurrentTask = Action(cancellationToken);
+                case CommandType.LightUp:
+                    CurrentTask = LightUp(cancellationToken);
                     break;
                 default: return;
             }
@@ -57,7 +57,7 @@ namespace Title.Game.Player
                 
                 if (Quaternion.Angle(transform.rotation, rotation) > 0.1f)
                 {
-                    transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, _rotationSpeed * Time.deltaTime);
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, RotationSpeed * Time.deltaTime);
                     return true;
                 }
 
@@ -104,7 +104,7 @@ namespace Title.Game.Player
                     }
                     if (Vector3.Distance(transform.position, destination.Position) > 0.1f)
                     {
-                        transform.position = Vector3.MoveTowards(transform.position, destination.Position, _speed * Time.fixedDeltaTime);
+                        transform.position = Vector3.MoveTowards(transform.position, destination.Position, Speed * Time.fixedDeltaTime);
                         return true;
                     }
 
@@ -120,7 +120,7 @@ namespace Title.Game.Player
             }
         }
 
-        private async Task Action(CancellationToken cancellationToken)
+        private async Task LightUp(CancellationToken cancellationToken)
         {
             if (CurrentTile is IObjective objective)
             {

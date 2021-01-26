@@ -1,15 +1,20 @@
-﻿using System.Collections.Generic;
-using Title.Game.Command;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine.EventSystems;
 
-public interface IFunction: IPointerDownHandler
+namespace CarGo.Game.Function
 {
-    event System.Action<IFunction> OnSelected;
-    FunctionType FunctionType { get; }
-    
-    List<CommandButton> CommandButtons { get; }
+    public interface IFunction : IPointerDownHandler
+    {
+        event Action<IFunction> OnSelected;
+        FunctionType FunctionType { get; }
 
-    void Initialize();
-    
-    void AddCommand(Command command);
+        List<CommandButton> ListOfCommandButton { get; }
+
+        void Initialize();
+
+        void AddCommand(Function.Command command);
+
+        void Clear();
+    }
 }

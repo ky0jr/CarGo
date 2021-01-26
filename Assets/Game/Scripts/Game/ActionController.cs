@@ -1,8 +1,12 @@
-﻿using Title.UI.Button;
+﻿using CarGo.UI.Button;
 using UnityEngine;
 
-public class ActionController : MonoBehaviour
+namespace CarGo.Game.Controller
 {
-    [SerializeField]
-    public Button PlayButton;
+    public class ActionController : MonoBehaviour
+    {
+        public Button PlayButton;
+
+        public Button ResetButton;
+    }
 }
