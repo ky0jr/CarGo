@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using CarGo.Game.Function;
 using UnityEngine;
@@ -11,9 +12,9 @@ namespace CarGo.Game.Player
 
         public ITile CurrentTile { get; set; }
 
-        private const float Speed = 1.5f;
+        private const float Speed = 1.25f;
 
-        private const float RotationSpeed = 270f;
+        private const float RotationSpeed = 240f;
 
         public Task CurrentTask { private set; get; } = Task.CompletedTask;
 
@@ -33,6 +34,9 @@ namespace CarGo.Game.Player
                     break;
                 case CommandType.LightUp:
                     CurrentTask = LightUp(cancellationToken);
+                    break;
+                case CommandType.BoostUp:
+                    CurrentTask = BoostUp(cancellationToken);
                     break;
                 default: return;
             }
@@ -124,10 +128,73 @@ namespace CarGo.Game.Player
         {
             if (CurrentTile is IObjective objective)
             {
-                objective.Objective();
+                await objective.Objective();
             }
+        }
+        
+        private async Task BoostUp (CancellationToken cancellationToken)
+        {
+            ITile destination = GameManager.Instance.NextTile(CurrentTile, MoveDirection, true);
+            float yPos = transform.position.y;
 
-            await new WaitForFixedUpdate();
+            if (!(destination is null))
+            {
+                await new WaitWhile(() =>
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return false;
+                    }
+                    
+                    if (Vector3.Distance(transform.position, destination.Position) > 0.1f)
+                    {
+                        if (yPos < destination.Position.y)
+                        {
+                            if (Math.Abs(transform.position.y - destination.Position.y) > 0.1f)
+                            {
+                                Vector3 newPos = transform.position;
+                                newPos.y = destination.Position.y;
+                                
+                                transform.position = Vector3.MoveTowards(transform.position, newPos, Speed * Time.fixedDeltaTime);
+                            }
+                            else
+                            {
+                                transform.position = Vector3.MoveTowards(transform.position, destination.Position, Speed * Time.fixedDeltaTime);
+                            }
+                        }
+                        else
+                        {
+                            Vector3 fowardPos = destination.Position;
+                            fowardPos.y = yPos;
+
+                            Vector3 holdPos = destination.Position;
+                            holdPos.y = 0;
+
+                            Vector3 playerTargetPosition = transform.position;
+                            playerTargetPosition.y = 0;
+                            
+                            if (Math.Abs(transform.position.y - destination.Position.y) > 0.1f && Vector3.Distance(holdPos, playerTargetPosition) <= 0.1f)
+                            {
+                                transform.position = Vector3.MoveTowards(transform.position, destination.Position, Speed * Time.fixedDeltaTime);
+                            }
+                            else
+                            {
+                                transform.position = Vector3.MoveTowards(transform.position, fowardPos, Speed * Time.fixedDeltaTime);
+                            }
+                        }
+                        return true;
+                    }
+
+                    transform.position = destination.Position;
+                    return false;
+                });
+
+                CurrentTile = destination;
+            }
+            else
+            {
+                await new WaitForFixedUpdate();
+            }
         }
 
         #endregion

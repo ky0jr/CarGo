@@ -10,10 +10,13 @@ namespace CarGo.Menu
 
         [SerializeField] private SceneManager sceneManager;
 
+        [SerializeField] private StageSelectionController stageSelectionController;
+
         private void Start()
         {
             mainMenuController.OnClickEvent += OnMenuChange;
             mainMenuController.Initialize();
+            stageSelectionController.OnPlay += sceneManager.ChangeScene;
         }
 
         private void OnMenuChange(string path)
@@ -21,7 +24,7 @@ namespace CarGo.Menu
             switch (path)
             {
                 case Path.MenuPath.Play:
-                    sceneManager.ChangeScene(Path.ScenePath.Stage1);
+                    stageSelectionController.Show();
                     break;
                 case Path.MenuPath.Option:
                     break;

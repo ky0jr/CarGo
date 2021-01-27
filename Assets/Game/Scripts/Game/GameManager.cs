@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using CarGo.Game.Controller;
 using CarGo.Game.Function;
 using CarGo.Game.Player;
@@ -31,7 +33,8 @@ namespace CarGo.Game
 
         #endregion
 
-        private const float TileDistance = 3.5f;
+        private const float TileDistanceHorizontal = 3.5f;
+        private const float TileDistanceVertical = 1.75f;
         
         [SerializeField] private Tile firstTile;
         [SerializeField] private List<Tile> Tiles = new List<Tile>();
@@ -82,7 +85,9 @@ namespace CarGo.Game
             actionController.PlayButton.ButtonDown += Play;
             actionController.ResetButton.ButtonDown += _functionManager.ResetFunction;
 
-            completeController.ContinueButton.ButtonDown += () => sceneManager.ChangeScene(Path.ScenePath.Menu);
+            completeController.ContinueButton.ButtonDown += () => sceneManager.ChangeScene(Path.ScenePath.MainMenu.ToString());
+            
+            Debug.Log("Game Start");
         }
 
         public ITile NextTile(ITile currentTile, Vector3 direction)
@@ -98,7 +103,7 @@ namespace CarGo.Game
                 _direction.y = 0;
                 _direction.Normalize();
 
-                if (_direction == direction * -1f && Vector3.Distance(currentTile.Position, tile.Position) <= TileDistance)
+                if (_direction == direction * -1f && Vector3.Distance(currentTile.Position, tile.Position) <= TileDistanceHorizontal)
                 {
                     return tile;
                 }
@@ -116,10 +121,14 @@ namespace CarGo.Game
 
             foreach (Tile tile in Tiles)
             {
-                Vector3 _direction = currentTile.Position - tile.Position;
+                Vector3 newPos = tile.Position;
+                newPos.y = 0;
+                Vector3 currentPos = currentTile.Position;
+                currentPos.y = 0;
+                Vector3 _direction = currentPos - newPos;
                 _direction.Normalize();
 
-                if (_direction == direction * -1f && Vector3.Distance(currentTile.Position, tile.Position) <= TileDistance)
+                if (_direction == direction * -1f && Vector3.Distance(newPos, currentPos) <= TileDistanceHorizontal && Math.Abs(currentTile.Position.y - tile.Position.y) <= TileDistanceVertical)
                 {
                     return tile;
                 }
@@ -130,8 +139,8 @@ namespace CarGo.Game
 
         private void CenterCamera()
         {
-            Vector3 topLeft = Vector3.zero;
-            Vector3 bottomRight = Vector3.zero;
+            Vector3 topLeft = new Vector3(float.MaxValue, 0, float.MinValue);
+            Vector3 bottomRight = new Vector3(float.MinValue, 0, float.MaxValue);
 
             if (Tiles.Count == 0)
             {
@@ -147,7 +156,7 @@ namespace CarGo.Game
                 if (tile.Position.x > bottomRight.x)
                     bottomRight.x = tile.Position.x;
                 if (tile.Position.z < bottomRight.z)
-                    topLeft.z = tile.Position.z;
+                    bottomRight.z = tile.Position.z;
             }
 
             float distance = Vector3.Distance(bottomRight, topLeft) / 2f;
@@ -164,6 +173,7 @@ namespace CarGo.Game
             if (_cancellationToken is null)
             {
                 actionController.PlayButton._Image.color = new Color(0.5f, 0.5f, 0.5f);
+                actionController.ResetButton._Image.raycastTarget = false;
                 _cancellationToken = new CancellationTokenSource();
                 CancellationToken ct = _cancellationToken.Token;
                 _functionManager.ActiveRaycast(false);
@@ -207,26 +217,34 @@ namespace CarGo.Game
             {
                 if (objective.Completed)
                 {
-                    objective.Objective();
+                    objective.Reset();
                 }
             }
             
             _functionManager.ActiveRaycast(true);
+            actionController.ResetButton._Image.raycastTarget = true;
             actionController.PlayButton._Image.color = new Color(1f, 1f, 1f);
         }
 
-        private void CheckObjective()
+        private async void CheckObjective()
         {
             foreach (IObjective objective in objectives)
             {
                 if(!objective.Completed)
                     return;
             }
+
+            await new WaitForSeconds(.2f);
             
             Debug.Log("Game Compelete");
             completeController.Show();
             
             _cancellationToken?.Cancel();
+        }
+
+        private void OnDestroy()
+        {
+            _instance = null;
         }
     }
 }

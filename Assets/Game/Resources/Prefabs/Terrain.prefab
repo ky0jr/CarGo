@@ -10,11 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 1252777257104927022}
   m_Layer: 0
-  m_Name: Environment
+  m_Name: Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 65
   m_IsActive: 1
 --- !u!4 &1252777257104927022
 Transform:
@@ -27,8 +27,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1252777257673710288}
   - {fileID: 2965060594691303522}
+  - {fileID: 1252777257673710288}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -77,7 +77,7 @@ PrefabInstance:
     - target: {fileID: 295545571686817140, guid: b6ce72d3f6ecf8941b9cbe0643eba07c,
         type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 295545571686817140, guid: b6ce72d3f6ecf8941b9cbe0643eba07c,
         type: 3}
@@ -98,6 +98,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 8170926365633983309, guid: b6ce72d3f6ecf8941b9cbe0643eba07c,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 65
+      objectReference: {fileID: 0}
+    - target: {fileID: 9070507689483256870, guid: b6ce72d3f6ecf8941b9cbe0643eba07c,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 65
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b6ce72d3f6ecf8941b9cbe0643eba07c, type: 3}
@@ -157,7 +167,7 @@ PrefabInstance:
     - target: {fileID: 8209494716889579069, guid: dff63dc0038438c4c9654bcc685d9d60,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8209494716889579069, guid: dff63dc0038438c4c9654bcc685d9d60,
         type: 3}

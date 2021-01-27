@@ -9,11 +9,14 @@
             public const string Exit = "Exit";
         }
 
-        public static class ScenePath
+        public enum ScenePath
         {
-            public const string Menu = "MainMenu";
-            public const string Stage1 = "Stage1";
-            public const string Stage2 = "Stage2";
+            MainMenu,
+            Stage1,
+            Stage2,
+            Stage3,
+            Stage4,
+            Stage5
         }
     }
 }

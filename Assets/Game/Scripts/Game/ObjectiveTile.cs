@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Threading.Tasks;
+using UnityEngine;
 
 namespace CarGo.Game
 {
@@ -16,15 +17,21 @@ namespace CarGo.Game
 
         private void Start()
         {
-            renderer.sharedMaterials = lightOffMaterial;
+            Reset();
         }
 
-        public void Objective()
+        async Task IObjective.Objective()
         {
             Completed = !Completed;
-            OnComplete?.Invoke();
-
             renderer.sharedMaterials = Completed ? lightUpMaterial : lightOffMaterial;
+            await new WaitForSeconds(.2f);
+            OnComplete?.Invoke();
+        }
+
+        public void Reset()
+        {
+            Completed = false;
+            renderer.sharedMaterials = lightOffMaterial;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace CarGo.Game
@@ -8,7 +9,9 @@ namespace CarGo.Game
         event Action OnComplete;
         bool Completed { get; }
 
-        void Objective();
+        Task Objective();
+        
+        void Reset();
     }
 
     public interface ITile

@@ -7,7 +7,7 @@ namespace CarGo.Game.Function
 {
     public class MainFunction : MonoBehaviour, IFunction
     {
-        private const int MaxCommand = 15;
+        private const int MaxCommand = 16;
         public event Action<IFunction> OnSelected;
         
         [SerializeField] private CommandButton prefab;
