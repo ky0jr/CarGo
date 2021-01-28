@@ -11,10 +11,10 @@ namespace CarGo.Game.Function
 
         List<CommandButton> ListOfCommandButton { get; }
 
-        void Initialize();
-
-        void AddCommand(Function.Command command);
+        void AddCommand(Command command);
 
         void Clear();
+
+        void Deselect();
     }
 }

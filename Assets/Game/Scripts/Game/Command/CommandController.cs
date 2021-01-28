@@ -7,7 +7,7 @@ namespace CarGo.Game.Controller
 {
     public class CommandController : MonoBehaviour
     {
-        public event Action<Function.Command> AddCommandEvent;
+        public event Action<Command> AddCommandEvent;
         [SerializeField] private CommandButton commandButtonPrefab;
 
         [SerializeField] private Transform commandBox;
@@ -29,7 +29,7 @@ namespace CarGo.Game.Controller
             isInitialize = true;
         }
 
-        private void AddCommand(Function.Command command)
+        private void AddCommand(Command command)
         {
             AddCommandEvent?.Invoke(command);
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using CarGo.Data;
 using CarGo.Game.Controller;
 using CarGo.Game.Function;
 using CarGo.Game.Player;
@@ -85,7 +86,7 @@ namespace CarGo.Game
             actionController.PlayButton.ButtonDown += Play;
             actionController.ResetButton.ButtonDown += _functionManager.ResetFunction;
 
-            completeController.ContinueButton.ButtonDown += () => sceneManager.ChangeScene(Path.ScenePath.MainMenu.ToString());
+            completeController.ContinueButton.ButtonDown += () => sceneManager.ChangeScene(Path.ScenePath.MainMenu);
             
             Debug.Log("Game Start");
         }
@@ -180,22 +181,25 @@ namespace CarGo.Game
                 
                 foreach (var mainCommand in _functionManager.CommandList(FunctionType.Main))
                 {
-                    if (mainCommand.CommandType == CommandType.Procedure)
-                    {
-                        foreach (var procedureCommand in _functionManager.CommandList(FunctionType.Procedure))
-                        {
-                            await _playerController.ExecuteCommand(procedureCommand.CommandType, ct);
-                            if (ct.IsCancellationRequested)
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        await _playerController.ExecuteCommand(mainCommand.CommandType, ct);
-                    }
-                    
                     if (ct.IsCancellationRequested)
                         break;
+                    
+                    CommandType current = mainCommand.CommandType;
+
+                    if (current == CommandType.Procedure)
+                    {
+                        while (current == CommandType.Procedure)
+                        {
+                            foreach (var procedureCommand in _functionManager.CommandList(FunctionType.Procedure))
+                            {
+                                if (ct.IsCancellationRequested)
+                                    break;
+                                current = procedureCommand.CommandType;
+                                await _playerController.ExecuteCommand(current, ct);
+                            }
+                        }
+                    }else
+                        await _playerController.ExecuteCommand(current, ct);
                 }
             }
             else
@@ -208,11 +212,6 @@ namespace CarGo.Game
 
         private void Reset()
         {
-            _playerController.transform.position = firstTile.Position;
-            _playerController.transform.rotation = defaultRotation;
-            _playerController.MoveDirection = moveDirection;
-            _playerController.CurrentTile = firstTile;
-
             foreach (IObjective objective in objectives)
             {
                 if (objective.Completed)
@@ -221,6 +220,11 @@ namespace CarGo.Game
                 }
             }
             
+            _playerController.transform.position = firstTile.Position;
+            _playerController.transform.rotation = defaultRotation;
+            _playerController.MoveDirection = moveDirection;
+            _playerController.CurrentTile = firstTile;
+
             _functionManager.ActiveRaycast(true);
             actionController.ResetButton._Image.raycastTarget = true;
             actionController.PlayButton._Image.color = new Color(1f, 1f, 1f);
@@ -233,13 +237,13 @@ namespace CarGo.Game
                 if(!objective.Completed)
                     return;
             }
-
-            await new WaitForSeconds(.2f);
-            
-            Debug.Log("Game Compelete");
-            completeController.Show();
             
             _cancellationToken?.Cancel();
+
+            await new WaitForSeconds(.2f);
+            DataManager.SaveData((int)SceneManager.CurrentScene);
+            Debug.Log("Game Compelete");
+            completeController.Show();
         }
 
         private void OnDestroy()

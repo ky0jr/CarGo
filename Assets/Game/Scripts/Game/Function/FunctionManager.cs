@@ -32,7 +32,7 @@ namespace CarGo.Game
             canvasGroup.blocksRaycasts = true;
         }
 
-        public IEnumerable<Function.Command> CommandList(FunctionType functionType)
+        public IEnumerable<Command> CommandList(FunctionType functionType)
         {
             return _functionController.CommandList(functionType);
         }

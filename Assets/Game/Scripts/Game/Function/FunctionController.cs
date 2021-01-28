@@ -10,7 +10,7 @@ namespace CarGo.Game.Controller
 
         private List<IFunction> _functions;
 
-        private bool isInitialize = false;
+        private bool isInitialize;
 
         public void Initialize()
         {
@@ -27,24 +27,27 @@ namespace CarGo.Game.Controller
 
                 if (function.FunctionType == FunctionType.Main)
                     currentFunction = function;
+                else
+                    function.Deselect();
             }
 
             isInitialize = true;
         }
 
-        public void AddCommand(Function.Command command)
+        public void AddCommand(Command command)
         {
             currentFunction.AddCommand(command);
         }
 
         private void SelectFunction(IFunction function)
         {
+            currentFunction.Deselect();
             currentFunction = function;
         }
 
-        public IEnumerable<Function.Command> CommandList(FunctionType functionType)
+        public IEnumerable<Command> CommandList(FunctionType functionType)
         {
-            List<Function.Command> commands = new List<Function.Command>();
+            List<Command> commands = new List<Command>();
 
             foreach (IFunction function in _functions)
             {

@@ -4,46 +4,62 @@ using UnityEngine;
 
 namespace CarGo.Menu
 {
-    public class StageSelectionController : MonoBehaviour
+    public class StageSelectController : MonoBehaviour
     {
-        public event System.Action<string> OnPlay;
+        public event System.Action<Path.ScenePath> OnPlay;
         private Canvas canvas;
 
         [SerializeField]
         private List<Button> StageButton;
 
-        private Path.ScenePath? selectedPath = null;
+        private Path.ScenePath? selectedStage = null;
 
         [SerializeField]
         private Button backButton;
 
         [SerializeField] 
         private Button playButton;
-        private void Start()
+
+        private bool isInitialize;
+        public void Initialize(int stageData)
         {
+            if(isInitialize)
+                return;
+            
             canvas = GetComponent<Canvas>();
             for (int i = 0; i < 5 ; i++)
             {
                 int index = i;
-                
-                StageButton[i].ButtonDown += () =>
+
+                bool checkSave = ((int)Mathf.Pow(2, i) & stageData) != 0;
+
+                if (checkSave)
                 {
-                    SetButtonStage(StageButton[index], (Path.ScenePath) index + 1);
-                };
+                    StageButton[i].ButtonDown += () =>
+                    {
+                        SetButtonStage(StageButton[index], (Path.ScenePath) index + 1);
+                    };
+                }
+                else
+                {
+                    StageButton[i].gameObject.SetActive(false);   
+                }
             }
 
             backButton.ButtonDown += () => { canvas.enabled = false; };
             playButton.ButtonDown += Play;
+
+            isInitialize = true;
         }
 
         private void SetButtonStage(Button button, Path.ScenePath path)
         {
-            if (selectedPath.HasValue)
+            if (selectedStage.HasValue)
             {
-                StageButton[(int)selectedPath - 1]._Image.color = Color.white;
+                StageButton[(int)selectedStage - 1]._Image.color = Color.white;
             }
 
-            selectedPath = path;
+            selectedStage = path;
             button._Image.color = new Color(.5f, .5f, .5f);
             playButton._Image.color = Color.white;
         }
@@ -56,9 +72,9 @@ namespace CarGo.Menu
 
         private void Play()
         {
-            if (selectedPath.HasValue)
+            if (selectedStage.HasValue)
             {
-                OnPlay?.Invoke(selectedPath.Value.ToString());
+                OnPlay?.Invoke(selectedStage.Value);
             }
         }
 
@@ -66,7 +82,7 @@ namespace CarGo.Menu
         {
             playButton._Image.color = new Color(.5f, .5f, .5f);
 
-            selectedPath = null;
+            selectedStage = null;
         }
     }
 }

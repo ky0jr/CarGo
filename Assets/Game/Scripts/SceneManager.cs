@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using CarGo.Menu;
 using UnityEngine;
 
 namespace CarGo.Scene
@@ -7,6 +8,8 @@ namespace CarGo.Scene
     {
         private static readonly int FadeOut = Animator.StringToHash("FadeOut");
         private static readonly int FadeIn = Animator.StringToHash("FadeIn");
+
+        public static Path.ScenePath CurrentScene { get; private set; } = Path.ScenePath.MainMenu;
         
         private Animator animator;
         private Canvas canvas;
@@ -20,11 +23,12 @@ namespace CarGo.Scene
             await Crossfade(FadeIn);
         }
 
-        public async void ChangeScene(string scene)
+        public async void ChangeScene(Path.ScenePath scene)
         {
             await Crossfade(FadeOut);
 
-            UnityEngine.SceneManagement.SceneManager.LoadScene(scene);
+            CurrentScene = scene;
+            UnityEngine.SceneManagement.SceneManager.LoadScene((int)scene);
         }
 
         private async Task Crossfade(int animation)

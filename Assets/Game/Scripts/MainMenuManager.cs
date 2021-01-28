@@ -1,6 +1,8 @@
-﻿using CarGo.Menu.Controller;
+﻿using CarGo.Data;
+using CarGo.Menu.Controller;
 using CarGo.Scene;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace CarGo.Menu
 {
@@ -10,13 +12,14 @@ namespace CarGo.Menu
 
         [SerializeField] private SceneManager sceneManager;
 
-        [SerializeField] private StageSelectionController stageSelectionController;
+        [FormerlySerializedAs("stageSelectionController")] [SerializeField] private StageSelectController stageSelectController;
 
         private void Start()
         {
             mainMenuController.OnClickEvent += OnMenuChange;
             mainMenuController.Initialize();
-            stageSelectionController.OnPlay += sceneManager.ChangeScene;
+            stageSelectController.Initialize(DataManager.LoadData());
+            stageSelectController.OnPlay += sceneManager.ChangeScene;
         }
 
         private void OnMenuChange(string path)
@@ -24,7 +27,7 @@ namespace CarGo.Menu
             switch (path)
             {
                 case Path.MenuPath.Play:
-                    stageSelectionController.Show();
+                    stageSelectController.Show();
                     break;
                 case Path.MenuPath.Option:
                     break;
