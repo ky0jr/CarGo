@@ -8,5 +8,7 @@ namespace CarGo.Game.Controller
         public Button PlayButton;
 
         public Button ResetButton;
+        
+        public Button SettingButton;
     }
 }

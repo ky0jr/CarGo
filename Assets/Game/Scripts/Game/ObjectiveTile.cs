@@ -15,16 +15,19 @@ namespace CarGo.Game
 
         [SerializeField] private Material[] lightOffMaterial;
 
+        private AudioSource _audioSource;
         private void Start()
         {
             Reset();
+            _audioSource = GetComponent<AudioSource>();
         }
 
         async Task IObjective.Objective()
         {
             Completed = !Completed;
             renderer.sharedMaterials = Completed ? lightUpMaterial : lightOffMaterial;
-            await new WaitForSeconds(.2f);
+            _audioSource.Play();
+            await new WaitForSeconds(.25f);
             OnComplete?.Invoke();
         }
 
