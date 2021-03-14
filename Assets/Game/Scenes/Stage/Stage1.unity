@@ -813,6 +813,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 835612629147472610, guid: dd0c6bfaaf45b34469ab9bb44ab5e4fe,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.575
+      objectReference: {fileID: 0}
     - target: {fileID: 1252777257104927022, guid: dd0c6bfaaf45b34469ab9bb44ab5e4fe,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -875,13 +880,33 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2965060594691303522, guid: dd0c6bfaaf45b34469ab9bb44ab5e4fe,
         type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -19.48
+      propertyPath: m_LocalPosition.y
+      value: 0.575
       objectReference: {fileID: 0}
-    - target: {fileID: 2965060594691303522, guid: dd0c6bfaaf45b34469ab9bb44ab5e4fe,
+    - target: {fileID: 3209095309035360576, guid: dd0c6bfaaf45b34469ab9bb44ab5e4fe,
         type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 16.67
+      propertyPath: m_LocalPosition.y
+      value: 0.575
+      objectReference: {fileID: 0}
+    - target: {fileID: 4931002537076415341, guid: dd0c6bfaaf45b34469ab9bb44ab5e4fe,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.575
+      objectReference: {fileID: 0}
+    - target: {fileID: 7477244858509539408, guid: dd0c6bfaaf45b34469ab9bb44ab5e4fe,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.575
+      objectReference: {fileID: 0}
+    - target: {fileID: 7869333316419150212, guid: dd0c6bfaaf45b34469ab9bb44ab5e4fe,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.575
+      objectReference: {fileID: 0}
+    - target: {fileID: 8958590378822589921, guid: dd0c6bfaaf45b34469ab9bb44ab5e4fe,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.575
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dd0c6bfaaf45b34469ab9bb44ab5e4fe, type: 3}
@@ -1021,6 +1046,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: CommandCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 6846967551865562336, guid: 2329862f43051b24faea89b57938e68a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2329862f43051b24faea89b57938e68a, type: 3}
