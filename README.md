@@ -1,4 +1,4 @@
-# Commander
+# CarGo
 This Game was made to complete Bachelor Thesis at Binus University (Universitas Bina Nusantara).
 
 For Copyright Issue please contact
